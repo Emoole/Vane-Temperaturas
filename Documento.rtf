@@ -1,0 +1,222 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang3082{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\colortbl ;\red255\green0\blue0;\red51\green51\blue51;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\cf1\b\f0\fs22\lang10 INDEX\cf0\b0\par
+<?php include("db.php")?>\par
+\par
+<?php include("includes/header.php")?>\par
+\par
+<div class="container p-4">\par
+\par
+    <div class="row">\par
+\par
+        <div class="col-md-4">\par
+            <div class="card card body">\par
+                <!--Aqu\'ed manda la tarea de guardar -->\par
+                <form action="save_res.php" method="POST">\par
+                    <div class="form-gruop">\par
+                        <input type="text" name="Cedula" class="form-control" placeholder="Cedula" autofocus>\par
+                    </div>\par
+                    <div class="form-gruop">\par
+                        <input type="text" name="Nombre" class="form-control" placeholder="Nombre">\par
+                    </div>\par
+                    <div class="form-gruop">\par
+                        <input type="text" name="Apellido" class="form-control" placeholder="Apellido">\par
+                    </div>\par
+                    <div class="form-gruop">\par
+                        <input type="text" name="NombreMascota" class="form-control" placeholder="Nombre Mascota">\par
+                    </div>\par
+                    <div class="form-gruop">\par
+                        <input type="date" name="FechaCita" class="form-control" placeholder="Fecha Cita">\par
+                    </div>\par
+                    <!-- <div class="form-group">\par
+                        <textarea name="Nombre" id="" rows="2" class="form-control" placeholder="Descripci\'f3n tarea"></textarea>\par
+                    </div -->\par
+                    <input type="submit" class="btn btn-success btn-block" name="save_res" value="Guardar Cita">\par
+                </form>\par
+            </div>\par
+\par
+        </div>\par
+       \par
+        </div>\par
+        <div class="col-md-8">\par
+\par
+        </div>\par
+        <div class="col-md-8">\par
+      <table class="table table-bordered">\par
+        <thead>\par
+          <tr>\par
+            <th>Cedula</th>\par
+            <th>Nombre</th>\par
+            <th>Apellido</th>\par
+            <th>Nombre Mascota</th>\par
+            <th>Fecha Cita</th>\par
+          </tr>\par
+        </thead>\par
+        <tbody>\par
+\par
+          <?php\par
+          $query = "SELECT * FROM Cliente";\par
+          mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);\par
+          $result_tasks = mysqli_query($conn, $query);    \par
+\par
+          while($row = mysqli_fetch_assoc($result_tasks)) \{ ?>\par
+          <tr>\par
+            <td><?php echo $row['Cedula']; ?></td>\par
+            <td><?php echo $row['Nombre']; ?></td>\par
+            <td><?php echo $row['Apellido']; ?></td>\par
+            <td><?php echo $row['NombreMascota']; ?></td>\par
+            <td><?php echo $row['FechaCita']; ?></td>\par
+            <td>\par
+              <a href="edit.php?Cedula=<?php echo $row['Cedula']?>" class="btn btn-secondary">\par
+                <i class="fas fa-marker">Editar</i>\par
+              </a>\par
+              <a href="delete_res.php?Cedula=<?php echo $row['Cedula']?>" class="btn btn-danger">\par
+                <i class="far fa-trash-alt">Eliminar</i>\par
+              </a>\par
+            </td>\par
+          </tr>\par
+          <?php \} ?>\par
+        </tbody>\par
+      </table>\par
+    </div>\par
+  </div>\par
+    </div>\par
+</div>\par
+<?php include("includes/footer.php")?>\par
+    \par
+\par
+\cf1\b BASE DE DATOS \par
+\cf0\b0 <?php\par
+$conn = mysqli_connect(\par
+    "localhost",\par
+    "root",\par
+    "",\par
+    "php_claseexcel"\par
+);\par
+\par
+//Saber si la bd est\'e1 conenctada\par
+ if (isset($conn))\{ \par
+          echo "Est\'e1 conectada";\par
+ \}\par
+?>\par
+\par
+\cf1\b SAVE\b0\par
+\cf2 <?php\par
+\par
+include("db.php");\par
+\par
+if (isset($_POST['save_res'])) \{\par
+    $Cedula= $_POST['Cedula'];\par
+    $Nombre= $_POST['Nombre'];\par
+    $Apellido= $_POST['Apellido'];\par
+    $NombreMascota = $_POST['NombreMascota'];\par
+    $FechaCita = $_POST['FechaCita'];\par
+\par
+    //date_default_timezone_get('America/Mexico_City');\par
+    //$FechaCita=date("H:i:s");\par
+    //echo FechaCita("h:i:s");\par
+\par
+    $query = "INSERT INTO Cliente(Cedula, Nombre,Apellido, NombreMascota,FechaCita ) \par
+    VALUES ('$Cedula', '$Nombre','$Apellido', '$NombreMascota','$FechaCita')";\par
+    $result = mysqli_query($conn, $query);\par
+    if (!$result) \{\par
+        die("Falla Query");\par
+\par
+    \}\par
+\par
+    echo 'guardado';\par
+\par
+    \par
+\}\par
+\par
+?>\par
+\b\par
+\cf1 EDITAR\cf2\par
+\b0 <?php\par
+include("db.php");\par
+$Nombre= '';\par
+$Apellido= '';\par
+$NombreMascota= '';\par
+$FechaCita= '';\par
+\par
+if  (isset($_GET['Cedula'])) \{\par
+  $Cedula = $_GET['Cedula'];\par
+  $query = "SELECT * FROM Cliente WHERE Cedula=$Cedula";\par
+  $result = mysqli_query($conn, $query);\par
+  \par
+  if (mysqli_num_rows($result) == 1) \{\par
+    $row = mysqli_fetch_array($result);\par
+    $Nombre = $row['Nombre'];\par
+    $Apellido = $row['Apellido'];\par
+    $NombreMascota = $row['NombreMascota'];\par
+    $FechaCita = $row['FechaCita'];\par
+    \par
+  \}\par
+\}\par
+\par
+if (isset($_POST['update'])) \{\par
+  $Cedula = $_GET['Cedula'];\par
+  $Nombre= $_POST['Nombre'];\par
+  $Apellido = $_POST['Apellido'];\par
+  $NombreMascota= $_POST['NombreMascota'];\par
+  $FechaCita= $_POST['FechaCita'];\par
+    \par
+  $query = "UPDATE Cliente set Nombre = '$Nombre', Apellido = '$Apellido', NombreMascota = '$NombreMascota', FechaCita = '$FechaCita' WHERE Cedula=$Cedula";\par
+  mysqli_query($conn, $query);\par
+  $_SESSION['message'] = 'Registro Updated Successfully';\par
+  $_SESSION['message_type'] = 'warning';\par
+  header('Location: index.php');\par
+\}\par
+\par
+?>\par
+<?php include('includes/header.php'); ?>\par
+<div class="container p-4">\par
+  <div class="row">\par
+    <div class="col-md-4 mx-auto">\par
+      <div class="card card-body">\par
+      <form action="edit.php?Cedula=<?php echo $_GET['Cedula']; ?>" method="POST">\par
+                    <div class="form-gruop">\par
+                        <input type="text" name="Nombre" class="form-control" value="<?php echo $Nombre; ?>" placeholder="Actualiza Nombre">\par
+                    </div>\par
+                    <div class="form-gruop">\par
+                        <input type="text" name="Apellido" class="form-control" value="<?php echo $Apellido; ?>" placeholder="Actualiza Apellido">\par
+                    </div>\par
+                    <div class="form-gruop">\par
+                        <input type="text" name="NombreMascota" class="form-control" value="<?php echo $NombreMascota; ?>" placeholder="Actualiza Nombre Mascota">\par
+                    </div>\par
+                    <div class="form-gruop">\par
+                        <input type="date" name="FechaCita" class="form-control" value="<?php echo $FechaCita; ?>" placeholder="Actualiza Fecha Cita">\par
+                    </div>\par
+        <button class="btn-success" name="update">Actualizar </button>\par
+      </form>\par
+      </div>\par
+    </div>\par
+  </div>\par
+</div>\par
+<?php include('includes/footer.php'); ?>\par
+\par
+\cf1\b ELIMINAR\cf2\b0\par
+<?php\par
+\par
+include("db.php");\par
+\par
+if(isset($_GET['Cedula'])) \{\par
+  $Cedula = $_GET['Cedula'];\par
+  $query = "DELETE FROM Cliente WHERE Cedula = $Cedula";\par
+  $result = mysqli_query($conn, $query);\par
+  if(!$result) \{\par
+    die("Query Failed.");\par
+  \}\par
+\par
+  $_SESSION['message'] = 'Cliente Removed Successfully';\par
+  $_SESSION['message_type'] = 'danger';\par
+  header('Location: index.php');\par
+\}\par
+\par
+?>\b\par
+\par
+\b0\par
+\cf0\par
+}
+ 
